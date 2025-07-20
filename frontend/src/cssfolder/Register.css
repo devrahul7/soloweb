@@ -1,0 +1,438 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #ffffff;
+  color: #333333;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Main Wrapper */
+.ecoSajha__main-wrapper {
+  min-height: 70vh;
+  background-color: #559b8f;
+  padding: 0rem 0;
+}
+
+.ecoSajha__page-container {
+  max-width: 1900px;
+  margin: 0 auto;
+  padding: 0 0 rem;
+}
+
+.ecoSajha__content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: center;
+  min-height: 60vh;
+}
+
+/* Image Column */
+.ecoSajha__image-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.ecoSajha__image-container {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+}
+
+.ecoSajha__register-image {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.ecoSajha__register-image:hover {
+  transform: translateY(-5px);
+}
+
+.ecoSajha__image-content {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-top: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border: 1px solid #f0f0f0;
+}
+
+.ecoSajha__image-content h2 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ecoSajha__image-content p {
+  color: #718096;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Form Column */
+.ecoSajha__form-column {
+  padding: 2rem;
+}
+
+.ecoSajha__form-wrapper {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+/* Header */
+.ecoSajha__form-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.ecoSajha__logo-container {
+  margin-bottom: 1.5rem;
+}
+
+.ecoSajha__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  border-radius: 50%;
+  font-size: 2rem;
+  color: white;
+  box-shadow: 0 5px 20px rgba(72, 187, 120, 0.3);
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ecoSajha__main-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.ecoSajha__main-subtitle {
+  color: #718096;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+/* Form */
+.ecoSajha__registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ecoSajha__input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ecoSajha__input-row--split {
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.ecoSajha__field-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.ecoSajha__field-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
+}
+
+.ecoSajha__field-input,
+.ecoSajha__field-select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  color: #2d3748;
+}
+
+.ecoSajha__field-input:focus,
+.ecoSajha__field-select:focus {
+  outline: none;
+  border-color: #48bb78;
+  box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
+
+.ecoSajha__field-input::placeholder {
+  color: #a0aec0;
+}
+
+.ecoSajha__field-select {
+  cursor: pointer;
+}
+
+/* Password Field */
+.ecoSajha__password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ecoSajha__password-btn {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #718096;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ecoSajha__password-btn:hover {
+  color: #48bb78;
+  background-color: rgba(72, 187, 120, 0.1);
+}
+
+/* Submit Button */
+.ecoSajha__submit-button {
+  width: 100%;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 1.25rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.ecoSajha__submit-button:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(72, 187, 120, 0.3);
+}
+
+.ecoSajha__button-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.ecoSajha__submit-button:hover .ecoSajha__button-icon {
+  transform: translateX(3px);
+}
+
+/* Footer */
+.ecoSajha__form-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ecoSajha__form-footer p {
+  color: #718096;
+  font-size: 0.95rem;
+}
+
+.ecoSajha__login-link {
+  color: #48bb78;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: all 0.3s ease;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+}
+
+.ecoSajha__login-link:hover {
+  color: #38a169;
+  background-color: rgba(72, 187, 120, 0.1);
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .ecoSajha__content-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .ecoSajha__image-column {
+    order: 2;
+  }
+  
+  .ecoSajha__form-column {
+    order: 1;
+  }
+  
+  .ecoSajha__page-container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ecoSajha__main-wrapper {
+    padding: 1rem 0;
+  }
+  
+  .ecoSajha__page-container {
+    padding: 0 1rem;
+  }
+  
+  .ecoSajha__form-wrapper {
+    padding: 2rem;
+  }
+  
+  .ecoSajha__main-title {
+    font-size: 2rem;
+  }
+  
+  .ecoSajha__input-row--split {
+    flex-direction: column;
+  }
+  
+  .ecoSajha__logo {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+  
+  .ecoSajha__content-grid {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .ecoSajha__form-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .ecoSajha__main-title {
+    font-size: 1.75rem;
+  }
+  
+  .ecoSajha__main-subtitle {
+    font-size: 1rem;
+  }
+  
+  .ecoSajha__field-input,
+  .ecoSajha__field-select {
+    padding: 0.875rem 1rem;
+  }
+  
+  .ecoSajha__submit-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .ecoSajha__image-column {
+    padding: 1rem;
+  }
+  
+  .ecoSajha__form-column {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ecoSajha__page-container {
+    padding: 0 0.5rem;
+  }
+  
+  .ecoSajha__form-wrapper {
+    padding: 1.25rem;
+  }
+  
+  .ecoSajha__form-header {
+    margin-bottom: 2rem;
+  }
+  
+  .ecoSajha__main-title {
+    font-size: 1.5rem;
+  }
+  
+  .ecoSajha__logo {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .ecoSajha__main-wrapper {
+    background-color: white;
+  }
+  
+  .ecoSajha__submit-button {
+    background: #48bb78 !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .ecoSajha__field-input,
+  .ecoSajha__field-select {
+    border-color: #000000;
+  }
+  
+  .ecoSajha__field-input:focus,
+  .ecoSajha__field-select:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

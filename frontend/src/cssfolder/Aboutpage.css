@@ -1,0 +1,417 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: white !important;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #2d5a3d;
+  background-color: white;
+}
+
+/* EcoSajha Hero Section */
+.ecosajha-hero-section {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 40px;
+}
+
+.ecosajha-hero-content-wrapper {
+  text-align: center;
+}
+
+.ecosajha-hero-content-wrapper h1 {
+  font-size: 2.5em;
+  margin-bottom: 13px;
+  color: #1e4d2b;
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ecosajha-hero-content-wrapper p {
+  font-size: 1.2em;
+  color: #4a7c59;
+  margin-bottom: 30px;
+}
+
+/* EcoSajha Hero Action Buttons */
+.ecosajha-hero-action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.ecosajha-request-pickup-btn,
+.ecosajha-what-we-buy-btn {
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.ecosajha-request-pickup-btn {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.ecosajha-request-pickup-btn:hover {
+  background: linear-gradient(135deg, #45a049, #5cb85c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.ecosajha-what-we-buy-btn {
+  background: linear-gradient(135deg, #66BB6A, #4CAF50);
+  box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+}
+
+.ecosajha-what-we-buy-btn:hover {
+  background: linear-gradient(135deg, #5cb85c, #45a049);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 187, 106, 0.4);
+}
+
+/* EcoSajha Service Highlights - Fixed Layout */
+.ecosajha-service-highlights-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.ecosajha-service-highlight-card {
+  background: linear-gradient(135deg, #ffffff, #f8fffe);
+  border: 2px solid #e8f5e8;
+  border-radius: 20px;
+  padding: 25px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  max-width: 420px;
+  flex: 1;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.1);
+}
+
+.ecosajha-service-highlight-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(76, 175, 80, 0.2);
+  border-color: #4CAF50;
+}
+
+.ecosajha-service-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-size: 24px;
+}
+
+.ecosajha-service-highlight-card h3 {
+  font-size: 1.1em;
+  color: #2d5a3d;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.ecosajha-service-highlight-card p {
+  font-size: 0.9em;
+  color: #4a7c59;
+  margin: 0;
+}
+
+/* EcoSajha Benefits Section */
+.ecosajha-benefits-section {
+  padding: 6rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ecosajha-benefits-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  animation: ecosajha-pulse-animation 15s infinite;
+}
+
+.ecosajha-benefits-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.ecosajha-benefits-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ecosajha-benefits-subtitle {
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin-bottom: 4rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ecosajha-benefits-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+
+.ecosajha-benefit-card {
+  background: white;
+  border-radius: 25px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.ecosajha-benefit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.ecosajha-benefit-card:hover::before {
+  left: 100%;
+}
+
+.ecosajha-benefit-card:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border-color: var(--card-color);
+}
+
+.ecosajha-benefit-icon-container {
+  width: 5rem;
+  height: 5rem;
+  background: linear-gradient(135deg, var(--card-color), var(--card-color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.ecosajha-benefit-card:hover .ecosajha-benefit-icon-container {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.ecosajha-benefit-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.ecosajha-benefit-card-description {
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* EcoSajha Animations */
+@keyframes ecosajha-pulse-animation {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.ecosajha-animate-card {
+  animation: ecosajha-slide-in-up 0.8s ease-out forwards;
+}
+
+@keyframes ecosajha-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* EcoSajha Focus States */
+.ecosajha-request-pickup-btn:focus,
+.ecosajha-what-we-buy-btn:focus {
+  outline: 3px solid #66BB6A;
+  outline-offset: 2px;
+}
+
+/* EcoSajha Responsive Design */
+@media (max-width: 1024px) {
+  .ecosajha-hero-section {
+    padding: 0 30px;
+  }
+  
+  .ecosajha-service-highlights-container {
+    gap: 20px;
+  }
+  
+  .ecosajha-benefits-grid-layout {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ecosajha-hero-section {
+    padding: 0 20px;
+  }
+  
+  .ecosajha-hero-action-buttons {
+    gap: 10px;
+  }
+  
+  .ecosajha-request-pickup-btn, 
+  .ecosajha-what-we-buy-btn {
+    flex: 1;
+    max-width: 200px;
+    min-width: 150px;
+  }
+
+  .ecosajha-service-highlights-container {
+    gap: 15px;
+  }
+  
+  .ecosajha-service-highlight-card {
+    min-width: 160px;
+    max-width: none;
+    flex: 1 1 160px;
+    padding: 20px 15px;
+  }
+  
+  .ecosajha-benefits-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .ecosajha-benefits-title {
+    font-size: 2.2rem;
+  }
+  
+  .ecosajha-benefit-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .ecosajha-benefits-section {
+    padding: 4rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ecosajha-hero-section {
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  
+  .ecosajha-hero-content-wrapper h1 {
+    font-size: 1.8em;
+  }
+  
+  .ecosajha-hero-content-wrapper p {
+    font-size: 1.1em;
+  }
+  
+  .ecosajha-hero-action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .ecosajha-request-pickup-btn, 
+  .ecosajha-what-we-buy-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  .ecosajha-service-highlights-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .ecosajha-service-highlight-card {
+    min-width: auto;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .ecosajha-benefits-title {
+    font-size: 1.8rem;
+  }
+  
+  .ecosajha-benefits-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .ecosajha-benefit-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .ecosajha-benefit-icon-container {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+  }
+  
+  .ecosajha-benefits-section {
+    padding: 3rem 1rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .ecosajha-hero-content-wrapper h1 {
+    font-size: 1.5em;
+  }
+  
+  .ecosajha-benefits-title {
+    font-size: 1.5rem;
+  }
+}

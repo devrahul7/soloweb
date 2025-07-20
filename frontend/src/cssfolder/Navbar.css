@@ -1,0 +1,261 @@
+/* Fresh EcoSajha Navbar - Pure CSS */
+.ecosajha-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: linear-gradient(135deg, #13475b 0%, #448e79 50%, #97cbe1 100%);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.ecosajha-navbar-container {
+  max-width: 1580px;
+  /* margin: 0 auto; */
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  height: 3.5rem;
+  justify-content: space-between;
+}
+
+/* Fresh Logo Styling */
+.ecosajha-logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;  
+  padding: 0.2rem 0.5rem;
+  transition: all 0.3s ease;
+  
+}
+
+.ecosajha-logo-wrapper:hover {
+  transform: translateY(-2px);
+  /* border-radius: 0.5rem; */
+  /* background: rgba(255, 255, 255, 0.15); */
+  /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); */
+}
+
+.ecosajha-logo-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.ecosajha-logo-wrapper:hover .ecosajha-logo-icon {
+  transform: rotate(12deg) scale(1.1);
+}
+
+.ecosajha-logo-text {
+  color: white;
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: -0.025em;
+  transition: color 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ecosajha-logo-wrapper:hover .ecosajha-logo-text {
+  color: #f0fdf4;
+}
+
+/* Fresh Mobile Menu Button */
+.ecosajha-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ecosajha-menu-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.ecosajha-menu-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+/* Fresh Navigation Links */
+.ecosajha-nav-desktop {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ecosajha-nav-link {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #f0fdf4;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+}
+
+.ecosajha-nav-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.ecosajha-nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+  transition: width 0.3s ease;
+}
+
+.ecosajha-nav-link:hover::before {
+  width: 100%;
+}
+
+.ecosajha-nav-link-active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ecosajha-nav-link-active::before {
+  width: 100%;
+}
+
+/* Fresh Mobile Menu */
+.ecosajha-mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, #047857 0%, #065f46 100%);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(-8px);
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ecosajha-mobile-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.ecosajha-mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 0.5rem;
+}
+
+.ecosajha-mobile-nav-link {
+  padding: 0.75rem 1rem;
+  color: #f0fdf4;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  text-align: left;
+}
+
+.ecosajha-mobile-nav-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ecosajha-mobile-nav-link-active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Fresh Responsive Design */
+@media (min-width: 640px) {
+  .ecosajha-navbar-container {
+    padding: 0 1.5rem;
+    height: 4rem;
+  }
+  
+  .ecosajha-menu-button {
+    display: none;
+  }
+  
+  .ecosajha-nav-desktop {
+    display: flex;
+  }
+  
+  .ecosajha-logo-text {
+    font-size: 1.25rem;
+  }
+  
+  .ecosajha-logo-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ecosajha-navbar-container {
+    padding: 0 2rem;
+  }
+  
+  .ecosajha-logo-text {
+    font-size: 1.375rem;
+  }
+  
+  .ecosajha-nav-link {
+    font-size: 1rem;
+  }
+}
+
+/* Fresh Animation */
+.ecosajha-navbar {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus styles for accessibility */
+.ecosajha-nav-link:focus,
+.ecosajha-logo-wrapper:focus,
+.ecosajha-menu-button:focus {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
