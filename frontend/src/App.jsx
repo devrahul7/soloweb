@@ -26,6 +26,10 @@ export default function App(){
             <Route path='/contact' element={<Contactpage/>}></Route>
 
 
+
+
+
+
         </Routes>
 
     </Router>
