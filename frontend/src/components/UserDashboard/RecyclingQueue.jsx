@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import ConfirmDialog from '../ui/ConfirmDialog';
+import CollectorRatingModal from './CollectorRatingModal';
 
 const RecyclingQueue = () => {
     const [recyclingQueue, setRecyclingQueue] = useLocalStorage('recyclingQueue', []);
     const [userProfile] = useLocalStorage('userProfile', {});
+    const [collectionRequests] = useLocalStorage('collectionRequests', []);
+    const [collectorRatings] = useLocalStorage('collectorRatings', []);
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, itemId: null });
     const [isRequestingCollection, setIsRequestingCollection] = useState(false);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [completedRequest, setCompletedRequest] = useState(null);
+
+    // Get the latest collection request status
+    const latestRequest = collectionRequests.length > 0 ? collectionRequests[0] : null;
+    const hasActiveRequest = latestRequest && ['Pending', 'Accepted', 'In Progress'].includes(latestRequest.status);
+
+    // Check if request is completed and needs rating
+    const needsRating = latestRequest && 
+        latestRequest.status === 'Completed' && 
+        !collectorRatings.some(rating => rating.collectionRequestId === latestRequest.id);
 
     // Enhanced quantity update with better validation and units
     const updateQuantity = (itemId, newQuantity) => {
@@ -61,6 +75,116 @@ const RecyclingQueue = () => {
 
         // Default to kg for others
         return { unit: 'kg', step: 0.1, min: 0.1 };
+    };
+
+    // Get status display function
+    const getStatusDisplay = (status) => {
+        switch (status) {
+            case 'Pending':
+                return {
+                    color: 'text-yellow-600 bg-yellow-100',
+                    icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    ),
+                    text: 'Pending Review'
+                };
+            case 'Accepted':
+                return {
+                    color: 'text-green-600 bg-green-100',
+                    icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    ),
+                    text: 'Accepted by Collector'
+                };
+            case 'In Progress':
+                return {
+                    color: 'text-blue-600 bg-blue-100',
+                    icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    ),
+                    text: 'Collection in Progress'
+                };
+            case 'Completed':
+                return {
+                    color: 'text-emerald-600 bg-emerald-100',
+                    icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    ),
+                    text: 'Collection Completed'
+                };
+            case 'Rejected':
+                return {
+                    color: 'text-red-600 bg-red-100',
+                    icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    ),
+                    text: 'Request Rejected'
+                };
+            default:
+                return {
+                    color: 'text-gray-600 bg-gray-100',
+                    icon: null,
+                    text: 'Unknown Status'
+                };
+        }
+    };
+
+    // Handle rating submission
+    const handleRatingSubmit = (ratingData) => {
+        // Save rating to localStorage
+        const existingRatings = JSON.parse(localStorage.getItem('collectorRatings') || '[]');
+        localStorage.setItem('collectorRatings', JSON.stringify([ratingData, ...existingRatings]));
+
+        // Update collector's overall rating
+        updateCollectorRating(ratingData);
+
+        // Show success notification
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+        notification.innerHTML = `
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>Thank you for your feedback!</span>
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 3000);
+    };
+
+    // Update collector's overall rating
+    const updateCollectorRating = (ratingData) => {
+        const collectors = JSON.parse(localStorage.getItem('collectors') || '[]');
+        const updatedCollectors = collectors.map(collector => {
+            if (collector.id === ratingData.collectorId) {
+                const existingRatings = collector.ratings || [];
+                const newRatings = [...existingRatings, ratingData];
+                const averageRating = newRatings.reduce((sum, r) => sum + r.rating, 0) / newRatings.length;
+                
+                return {
+                    ...collector,
+                    ratings: newRatings,
+                    averageRating: Math.round(averageRating * 10) / 10,
+                    totalRatings: newRatings.length
+                };
+            }
+            return collector;
+        });
+        
+        localStorage.setItem('collectors', JSON.stringify(updatedCollectors));
     };
 
     const removeFromQueue = (itemId) => {
@@ -141,7 +265,15 @@ const RecyclingQueue = () => {
                 },
                 requestDate: new Date().toISOString(),
                 status: 'Pending',
-                estimatedCollectionDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days from now
+                estimatedCollectionDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+                collectorInfo: null,
+                statusHistory: [
+                    {
+                        status: 'Pending',
+                        timestamp: new Date().toISOString(),
+                        message: 'Collection request submitted successfully'
+                    }
+                ]
             };
 
             // Save to collection history
@@ -206,7 +338,106 @@ const RecyclingQueue = () => {
                 </div>
             </div>
 
-            {recyclingQueue.length === 0 ? (
+            {/* Rating Prompt for Completed Collections */}
+            {needsRating && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-gray-900">Collection Completed!</h3>
+                                <p className="text-sm text-gray-600">How was your experience with {latestRequest.collectorInfo?.name}?</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setCompletedRequest(latestRequest);
+                                setIsRatingModalOpen(true);
+                            }}
+                            className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center space-x-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                            <span>Rate Experience</span>
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Active Request Status */}
+            {latestRequest && hasActiveRequest && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Collection Request Status</h3>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                                <div className={`px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-2 ${getStatusDisplay(latestRequest.status).color}`}>
+                                    {getStatusDisplay(latestRequest.status).icon}
+                                    <span>{getStatusDisplay(latestRequest.status).text}</span>
+                                </div>
+                                <span className="text-sm text-gray-500">
+                                    Request #{latestRequest.id}
+                                </span>
+                            </div>
+                            <span className="text-sm text-gray-500">
+                                Submitted: {new Date(latestRequest.requestDate).toLocaleDateString()}
+                            </span>
+                        </div>
+
+                        {/* Collector Information (if accepted) */}
+                        {latestRequest.status === 'Accepted' && latestRequest.collectorInfo && (
+                            <div className="bg-white rounded-lg p-4 mb-4">
+                                <h4 className="font-medium text-gray-900 mb-2">Assigned Collector</h4>
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-900">{latestRequest.collectorInfo.name}</p>
+                                        <p className="text-sm text-gray-600">Phone: {latestRequest.collectorInfo.phone}</p>
+                                        <p className="text-sm text-gray-600">Rating: ⭐ {latestRequest.collectorInfo.rating}/5</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Expected Collection Date */}
+                        {latestRequest.estimatedCollectionDate && (
+                            <div className="flex items-center space-x-2 text-sm text-gray-600">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span>
+                                    Expected Collection: {new Date(latestRequest.estimatedCollectionDate).toLocaleDateString()} at {new Date(latestRequest.estimatedCollectionDate).toLocaleTimeString()}
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Request Summary */}
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span className="text-gray-600">Items:</span>
+                                    <span className="ml-2 font-medium">{latestRequest.items.length}</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Total Value:</span>
+                                    <span className="ml-2 font-medium text-green-600">Rs. {latestRequest.totalEstimatedValue}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {recyclingQueue.length === 0 && !hasActiveRequest ? (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12">
                     <div className="text-center">
                         <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -226,7 +457,7 @@ const RecyclingQueue = () => {
                         </button>
                     </div>
                 </div>
-            ) : (
+            ) : recyclingQueue.length > 0 ? (
                 <div className="space-y-6">
                     {/* Items List */}
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -427,7 +658,15 @@ const RecyclingQueue = () => {
                         </div>
                     </div>
                 </div>
-            )}
+            ) : null}
+
+            {/* Rating Modal */}
+            <CollectorRatingModal
+                isOpen={isRatingModalOpen}
+                onClose={() => setIsRatingModalOpen(false)}
+                collectionRequest={completedRequest}
+                onSubmitRating={handleRatingSubmit}
+            />
 
             {/* Confirm Remove Dialog */}
             <ConfirmDialog
