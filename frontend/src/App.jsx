@@ -5,6 +5,8 @@ import About from '../src/pages/Aboutpage';  // Make sure this path is correct
 import Contact from '../src/pages/Contactpage';  // Make sure this path is correct
 import Login from './pages/Login';
 import Register from './pages/Register';
+
+// User Dashboard Components
 import UserDashboard from './pages/UserDashboard';
 import DashboardOverview from './components/UserDashboard/DashboardOverview';
 import Items from './components/UserDashboard/Items';
@@ -15,6 +17,16 @@ import History from './components/UserDashboard/History';
 import Settings from './components/UserDashboard/Settings';
 import Wishlist from './components/UserDashboard/Wishlist';
 import MyReviews from './components/UserDashboard/MyReviews';
+
+// Collector Dashboard Components
+import CollectorDashboard from './pages/CollectorDashboard';
+import CollectorDashboardHome from './components/collector/CollectorDashboardHome';
+import CollectionRequests from './components/collector/CollectionRequests';
+import CollectorProfile from './components/collector/CollectorProfile';
+import CollectorReviews from './components/collector/CollectorReviews';
+import CollectorNotifications from './components/collector/CollectorNotifications';
+import CollectorEarnings from './components/collector/CollectorEarnings';
+import CollectorSettings from './components/collector/CollectorSettings';
 
 function App() {
   return (
@@ -39,7 +51,17 @@ function App() {
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="settings" element={<Settings />} />
             <Route path="reviews" element={<MyReviews />} />
-
+          </Route>
+          
+          {/* Collector Dashboard Routes */}
+          <Route path="/collector/dashboard" element={<CollectorDashboard />}>
+            <Route index element={<CollectorDashboardHome />} />
+            <Route path="requests" element={<CollectionRequests />} />
+            <Route path="earnings" element={<CollectorEarnings />} />
+            <Route path="reviews" element={<CollectorReviews />} />
+            <Route path="profile" element={<CollectorProfile />} />
+            <Route path="notifications" element={<CollectorNotifications />} />
+            <Route path="settings" element={<CollectorSettings />} />
           </Route>
           
           {/* Redirect old dashboard routes to new structure */}
