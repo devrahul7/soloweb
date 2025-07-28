@@ -14,6 +14,7 @@ import UserProfile from './components/UserDashboard/UserProfile';
 import History from './components/UserDashboard/History';
 import Settings from './components/UserDashboard/Settings';
 import Wishlist from './components/UserDashboard/Wishlist';
+import MyReviews from './components/UserDashboard/MyReviews';
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
             <Route path="history" element={<History />} />
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="reviews" element={<MyReviews />} />
+
           </Route>
           
           {/* Redirect old dashboard routes to new structure */}
