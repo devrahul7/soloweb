@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 const UserProfile = () => {
@@ -9,11 +9,16 @@ const UserProfile = () => {
         address: '',
         city: '',
         postalCode: '',
-        joinDate: new Date().toISOString().split('T')[0]
+        joinDate: new Date().toISOString().split('T')[0],
+        profileImage: ''
     });
 
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(userProfile);
+    const [imagePreview, setImagePreview] = useState(userProfile.profileImage || '');
+    
+    // Use useRef for better file input control
+    const fileInputRef = useRef(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -23,19 +28,72 @@ const UserProfile = () => {
         }));
     };
 
-    const handleSave = () => {
-        setUserProfile(formData);
-        setIsEditing(false);
+    // Enhanced image upload handler
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
         
-        // Better success notification
+        if (!file) {
+            return;
+        }
+
+        console.log('File selected:', file.name, file.type, file.size); // Debug log
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showNotification('Please select a valid image file!', 'error');
+            resetFileInput();
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showNotification('Image size must be less than 5MB!', 'error');
+            resetFileInput();
+            return;
+        }
+
+        // Create FileReader instance
+        const reader = new FileReader();
+        
+        reader.onload = (event) => {
+            const imageDataUrl = event.target.result;
+            console.log('Image loaded successfully'); // Debug log
+            
+            setImagePreview(imageDataUrl);
+            setFormData(prev => ({
+                ...prev,
+                profileImage: imageDataUrl
+            }));
+            
+            showNotification('Image uploaded successfully!', 'success');
+        };
+
+        reader.onerror = (error) => {
+            console.error('FileReader error:', error);
+            showNotification('Error reading the image file!', 'error');
+            resetFileInput();
+        };
+
+        // Read the file as data URL
+        reader.readAsDataURL(file);
+    };
+
+    // Helper function to show notifications
+    const showNotification = (message, type = 'info') => {
         const notification = document.createElement('div');
-        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+        const bgColor = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500';
+        const icon = type === 'error' ? 
+            `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>` :
+            `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
+        
+        notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2`;
         notification.innerHTML = `
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                ${icon}
             </svg>
-            <span>Profile updated successfully!</span>
+            <span>${message}</span>
         `;
+        
         document.body.appendChild(notification);
         
         setTimeout(() => {
@@ -45,9 +103,41 @@ const UserProfile = () => {
         }, 3000);
     };
 
+    // Helper function to reset file input
+    const resetFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    // Trigger file input click
+    const triggerFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const removeImage = () => {
+        setImagePreview('');
+        setFormData(prev => ({
+            ...prev,
+            profileImage: ''
+        }));
+        resetFileInput();
+        showNotification('Profile picture removed', 'info');
+    };
+
+    const handleSave = () => {
+        setUserProfile(formData);
+        setIsEditing(false);
+        showNotification('Profile updated successfully!', 'success');
+    };
+
     const handleCancel = () => {
         setFormData(userProfile);
+        setImagePreview(userProfile.profileImage || '');
         setIsEditing(false);
+        resetFileInput();
     };
 
     const getInitials = () => {
@@ -67,8 +157,18 @@ const UserProfile = () => {
             <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white mb-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center space-x-4">
-                        <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-white border-opacity-30">
-                            {getInitials()}
+                        <div className="relative">
+                            {userProfile.profileImage || imagePreview ? (
+                                <img
+                                    src={imagePreview || userProfile.profileImage}
+                                    alt="Profile"
+                                    className="w-20 h-20 rounded-full object-cover border-4 border-white border-opacity-30"
+                                />
+                            ) : (
+                                <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-white border-opacity-30">
+                                    {getInitials()}
+                                </div>
+                            )}
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">{userProfile.fullName || 'User Profile'}</h1>
@@ -76,7 +176,7 @@ const UserProfile = () => {
                         </div>
                     </div>
                     
-                    {/* Edit/Save/Cancel Buttons - Now more visible */}
+                    {/* Edit/Save/Cancel Buttons */}
                     <div className="flex-shrink-0">
                         {!isEditing ? (
                             <button
@@ -117,6 +217,81 @@ const UserProfile = () => {
             {/* Main Profile Form */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                 <div className="space-y-8">
+                    {/* Profile Picture Section */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-6">Profile Picture</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+                            <div className="flex-shrink-0">
+                                {imagePreview || userProfile.profileImage ? (
+                                    <img
+                                        src={imagePreview || userProfile.profileImage}
+                                        alt="Profile Preview"
+                                        className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
+                                    />
+                                ) : (
+                                    <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center border-4 border-gray-200">
+                                        <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {isEditing && (
+                                <div className="flex-1">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Upload Profile Picture
+                                            </label>
+                                            
+                                            {/* Hidden file input */}
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="hidden"
+                                                multiple={false}
+                                            />
+                                            
+                                            <div className="flex items-center space-x-4">
+                                                {/* Custom upload button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={triggerFileInput}
+                                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 font-medium cursor-pointer"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                                    </svg>
+                                                    <span>Choose Image</span>
+                                                </button>
+                                                
+                                                {(imagePreview || userProfile.profileImage) && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={removeImage}
+                                                        className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2 font-medium"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                        <span>Remove</span>
+                                                    </button>
+                                                )}
+                                            </div>
+                                            
+                                            <p className="text-sm text-gray-500 mt-2">
+                                                Supported formats: JPG, PNG, GIF. Max size: 5MB
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     {/* Personal Information */}
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-6">Personal Information</h3>
@@ -228,25 +403,7 @@ const UserProfile = () => {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Postal Code
-                                    </label>
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            name="postalCode"
-                                            value={formData.postalCode}
-                                            onChange={handleInputChange}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                                            placeholder="Enter postal code"
-                                        />
-                                    ) : (
-                                        <p className="text-gray-900 py-3 px-4 bg-gray-50 rounded-lg">
-                                            {userProfile.postalCode || 'Not provided'}
-                                        </p>
-                                    )}
-                                </div>
+  
                             </div>
                         </div>
                     </div>

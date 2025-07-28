@@ -8,14 +8,59 @@ const RecyclingQueue = () => {
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, itemId: null });
     const [isRequestingCollection, setIsRequestingCollection] = useState(false);
 
+    // Enhanced quantity update with better validation and units
     const updateQuantity = (itemId, newQuantity) => {
         if (newQuantity < 0.1) return; // Minimum quantity
         
         setRecyclingQueue(prev => prev.map(item => 
             item.id === itemId 
-                ? { ...item, quantity: newQuantity, estimatedValue: (newQuantity * item.pricePerUnit).toFixed(2) }
+                ? { 
+                    ...item, 
+                    quantity: newQuantity, 
+                    estimatedValue: (newQuantity * item.pricePerUnit).toFixed(2) 
+                }
                 : item
         ));
+    };
+
+    // Get appropriate unit and step for different item types
+    const getQuantityConfig = (category, itemName) => {
+        const itemLower = itemName.toLowerCase();
+        const categoryLower = category.toLowerCase();
+
+        // Weight-based items (kg)
+        if (categoryLower.includes('paper') || 
+            categoryLower.includes('metal') || 
+            categoryLower.includes('brass') ||
+            itemLower.includes('newspaper') ||
+            itemLower.includes('cardboard') ||
+            itemLower.includes('aluminum') ||
+            itemLower.includes('steel') ||
+            itemLower.includes('iron')) {
+            return { unit: 'kg', step: 0.5, min: 0.5 };
+        }
+        
+        // Piece-based items
+        if (categoryLower.includes('e-waste') ||
+            itemLower.includes('phone') ||
+            itemLower.includes('laptop') ||
+            itemLower.includes('computer') ||
+            itemLower.includes('tv') ||
+            itemLower.includes('monitor')) {
+            return { unit: 'pcs', step: 1, min: 1 };
+        }
+        
+        // Glass and plastic can be either weight or pieces
+        if (categoryLower.includes('glass') || categoryLower.includes('plastic')) {
+            if (itemLower.includes('bottle') || itemLower.includes('container') || itemLower.includes('jar')) {
+                return { unit: 'pcs', step: 1, min: 1 };
+            } else {
+                return { unit: 'kg', step: 0.1, min: 0.1 };
+            }
+        }
+
+        // Default to kg for others
+        return { unit: 'kg', step: 0.1, min: 0.1 };
     };
 
     const removeFromQueue = (itemId) => {
@@ -45,12 +90,38 @@ const RecyclingQueue = () => {
 
     const requestCollection = async () => {
         if (!userProfile.address || !userProfile.phone) {
-            alert('Please complete your profile (address and phone) before requesting collection.');
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+            notification.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <span>Please complete your profile (address and phone) before requesting collection.</span>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 4000);
             return;
         }
 
         if (recyclingQueue.length === 0) {
-            alert('Your recycling queue is empty. Add items before requesting collection.');
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+            notification.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <span>Your recycling queue is empty. Add items before requesting collection.</span>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 4000);
             return;
         }
 
@@ -119,11 +190,6 @@ const RecyclingQueue = () => {
             <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-6 text-white">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16l-1 14H5L4 6zM4 6L2 4m18 2l2-2M9 10v4m6-4v4" />
-                            </svg>
-                        </div>
                         <div>
                             <h1 className="text-2xl font-bold">Recycling Queue</h1>
                             <p className="text-emerald-100">
@@ -166,62 +232,126 @@ const RecyclingQueue = () => {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Items in Queue</h2>
                         <div className="space-y-4">
-                            {recyclingQueue.map((item) => (
-                                <div key={item.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <img 
-                                        src={item.image} 
-                                        alt={item.name}
-                                        className="w-16 h-16 object-cover rounded-lg"
-                                    />
-                                    <div className="flex-1">
-                                        <h3 className="font-medium text-gray-900">{item.name}</h3>
-                                        <div className="mt-1">
-                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(item.category)}`}>
-                                                {item.category}
-                                            </span>
+                            {recyclingQueue.map((item) => {
+                                const quantityConfig = getQuantityConfig(item.category, item.name);
+                                
+                                return (
+                                    <div key={item.id} className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                        <img 
+                                            src={item.image} 
+                                            alt={item.name}
+                                            className="w-16 h-16 object-cover rounded-lg"
+                                        />
+                                        <div className="flex-1">
+                                            <h3 className="font-medium text-gray-900">{item.name}</h3>
+                                            <div className="mt-1">
+                                                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(item.category)}`}>
+                                                    {item.category}
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-gray-600 mt-1">Rs. {item.pricePerUnit}/{quantityConfig.unit}</p>
                                         </div>
-                                        <p className="text-sm text-gray-600 mt-1">Rs. {item.pricePerUnit}/unit</p>
-                                    </div>
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex items-center space-x-2">
+                                        
+                                        {/* Enhanced Quantity Controls */}
+                                        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                                            <div className="flex flex-col items-center space-y-2">
+                                                <label className="text-xs text-gray-600 font-medium">
+                                                    Quantity ({quantityConfig.unit})
+                                                </label>
+                                                <div className="flex items-center space-x-2">
+                                                    <button
+                                                        onClick={() => updateQuantity(item.id, Math.max(quantityConfig.min, item.quantity - quantityConfig.step))}
+                                                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors text-sm font-medium"
+                                                        disabled={item.quantity <= quantityConfig.min}
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <input
+                                                        type="number"
+                                                        value={item.quantity}
+                                                        onChange={(e) => {
+                                                            const value = parseFloat(e.target.value);
+                                                            if (value >= quantityConfig.min) {
+                                                                updateQuantity(item.id, value);
+                                                            }
+                                                        }}
+                                                        className="w-20 text-center border border-gray-300 rounded-lg py-1 text-sm"
+                                                        min={quantityConfig.min}
+                                                        step={quantityConfig.step}
+                                                    />
+                                                    <button
+                                                        onClick={() => updateQuantity(item.id, item.quantity + quantityConfig.step)}
+                                                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors text-sm font-medium"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                                {/* Quick quantity buttons for common amounts */}
+                                                <div className="flex space-x-1">
+                                                    {quantityConfig.unit === 'kg' ? (
+                                                        <>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, 1)}
+                                                                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                                            >
+                                                                1kg
+                                                            </button>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, 5)}
+                                                                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                                            >
+                                                                5kg
+                                                            </button>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, 10)}
+                                                                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                                            >
+                                                                10kg
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, 5)}
+                                                                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                                            >
+                                                                5pcs
+                                                            </button>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, 10)}
+                                                                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                                            >
+                                                                10pcs
+                                                            </button>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, 20)}
+                                                                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                                            >
+                                                                20pcs
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="text-center min-w-[100px]">
+                                                <p className="font-semibold text-emerald-600 text-lg">Rs. {item.estimatedValue}</p>
+                                                <p className="text-xs text-gray-500">estimated value</p>
+                                            </div>
+                                            
                                             <button
-                                                onClick={() => updateQuantity(item.id, item.quantity - 0.5)}
-                                                className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                disabled={item.quantity <= 0.5}
+                                                onClick={() => handleRemoveClick(item.id)}
+                                                className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 text-red-600 flex items-center justify-center transition-colors"
+                                                title="Remove from queue"
                                             >
-                                                -
-                                            </button>
-                                            <input
-                                                type="number"
-                                                value={item.quantity}
-                                                onChange={(e) => updateQuantity(item.id, parseFloat(e.target.value) || 0)}
-                                                className="w-20 text-center border border-gray-300 rounded-lg py-1"
-                                                min="0.1"
-                                                step="0.5"
-                                            />
-                                            <button
-                                                onClick={() => updateQuantity(item.id, item.quantity + 0.5)}
-                                                className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                            >
-                                                +
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
                                             </button>
                                         </div>
-                                        <div className="text-right min-w-[80px]">
-                                            <p className="font-semibold text-emerald-600">Rs. {item.estimatedValue}</p>
-                                            <p className="text-xs text-gray-500">estimated</p>
-                                        </div>
-                                        <button
-                                            onClick={() => handleRemoveClick(item.id)}
-                                            className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 text-red-600 flex items-center justify-center transition-colors"
-                                            title="Remove from queue"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -235,6 +365,12 @@ const RecyclingQueue = () => {
                                     <div className="flex justify-between">
                                         <span>Total Items:</span>
                                         <span className="font-medium">{recyclingQueue.length}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Total Weight/Pieces:</span>
+                                        <span className="font-medium">
+                                            {recyclingQueue.reduce((total, item) => total + item.quantity, 0)} units
+                                        </span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>Estimated Value:</span>

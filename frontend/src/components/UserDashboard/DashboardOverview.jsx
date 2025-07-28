@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
-const DashboardOverview = () => {
+const DashboardOverview = ({ setActiveTab }) => {
+  const navigate = useNavigate();
   const [postedItems] = useLocalStorage("postedItems", []);
   const [wishlistItems] = useLocalStorage("wishlistItems", []);
   const [userProfile] = useLocalStorage("userProfile", {});
@@ -25,6 +27,26 @@ const DashboardOverview = () => {
   }, 0);
 
   const recentItems = postedItems.slice(0, 3);
+
+  // Handle quick action navigation
+  const handleQuickAction = (action) => {
+    switch (action) {
+      case "post":
+        navigate("/user/dashboard/post");
+        if (setActiveTab) setActiveTab("post");
+        break;
+      case "wishlist":
+        navigate("/user/dashboard/wishlist");
+        if (setActiveTab) setActiveTab("wishlist");
+        break;
+      case "profile":
+        navigate("/user/dashboard/profile");
+        if (setActiveTab) setActiveTab("profile");
+        break;
+      default:
+        break;
+    }
+  };
 
   const quickActions = [
     {
@@ -282,7 +304,8 @@ const DashboardOverview = () => {
             {quickActions.map((action, index) => (
               <button
                 key={index}
-                className="w-full flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                onClick={() => handleQuickAction(action.action)}
+                className="w-full flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all duration-200 hover:shadow-md transform hover:scale-[1.02]"
               >
                 <div
                   className={`w-10 h-10 ${action.color} rounded-lg flex items-center justify-center text-white mr-4`}
@@ -294,7 +317,7 @@ const DashboardOverview = () => {
                   <p className="text-sm text-gray-600">{action.description}</p>
                 </div>
                 <svg
-                  className="w-5 h-5 text-gray-400 ml-auto"
+                  className="w-5 h-5 text-gray-400 ml-auto transition-transform duration-200 group-hover:translate-x-1"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -382,7 +405,7 @@ const DashboardOverview = () => {
       <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <span className="mr-2">🌍</span>
-           Eco Tips
+          Eco Tips
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {ecoTips.map((tip, index) => (
