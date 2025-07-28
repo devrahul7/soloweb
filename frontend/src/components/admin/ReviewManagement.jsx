@@ -106,49 +106,50 @@ const ReviewManagement = () => {
         : 0;
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6">
+        <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-6 text-white">
-                <h1 className="text-2xl font-bold">Review Management</h1>
-                <p className="text-yellow-100">Monitor and manage customer reviews and ratings</p>
+            <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 sm:p-6 text-white">
+                <h1 className="text-xl sm:text-2xl font-bold">Review Management</h1>
+                <p className="text-yellow-100 text-sm sm:text-base mt-1">Monitor and manage customer reviews and ratings</p>
             </div>
 
             {/* Analytics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
                     <div className="text-center">
-                        <p className="text-sm text-gray-600">Total Reviews</p>
-                        <p className="text-2xl font-bold text-blue-600">{collectorRatings.length}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Total Reviews</p>
+                        <p className="text-xl sm:text-2xl font-bold text-blue-600">{collectorRatings.length}</p>
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
                     <div className="text-center">
-                        <p className="text-sm text-gray-600">Average Rating</p>
-                        <p className="text-2xl font-bold text-yellow-600">{averageRating}⭐</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Average Rating</p>
+                        <p className="text-xl sm:text-2xl font-bold text-yellow-600">{averageRating}⭐</p>
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
                     <div className="text-center">
-                        <p className="text-sm text-gray-600">5-Star Reviews</p>
-                        <p className="text-2xl font-bold text-green-600">{ratingCounts[5]}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">5-Star Reviews</p>
+                        <p className="text-xl sm:text-2xl font-bold text-green-600">{ratingCounts[5]}</p>
                         <p className="text-xs text-gray-500">
                             {collectorRatings.length > 0 ? Math.round((ratingCounts[5] / collectorRatings.length) * 100) : 0}%
                         </p>
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
                     <div className="text-center">
-                        <p className="text-sm text-gray-600">Low Ratings (≤2)</p>
-                        <p className="text-2xl font-bold text-red-600">{ratingCounts[1] + ratingCounts[2]}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Low Ratings (≤2)</p>
+                        <p className="text-xl sm:text-2xl font-bold text-red-600">{ratingCounts[1] + ratingCounts[2]}</p>
                         <p className="text-xs text-gray-500">Need attention</p>
                     </div>
                 </div>
             </div>
 
             {/* Search and Filters */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 mb-6">
-                    <div className="flex-1 max-w-md">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                <div className="flex flex-col space-y-4 mb-6">
+                    {/* Search Bar */}
+                    <div className="w-full">
                         <div className="relative">
                             <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -158,16 +159,18 @@ const ReviewManagement = () => {
                                 placeholder="Search reviews by collector, user, or feedback..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
                             />
                         </div>
                     </div>
+                    
+                    {/* Filter Buttons */}
                     <div className="flex flex-wrap gap-2">
                         {Object.entries(ratingCounts).map(([rating, count]) => (
                             <button
                                 key={rating}
                                 onClick={() => setFilterRating(rating)}
-                                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                                className={`px-3 sm:px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex-shrink-0 ${
                                     filterRating === rating
                                         ? 'bg-yellow-500 text-white shadow-md'
                                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -179,23 +182,95 @@ const ReviewManagement = () => {
                     </div>
                 </div>
 
-                {/* Reviews Table */}
-                <div className="overflow-x-auto">
+                {/* Mobile Card View (< md) */}
+                <div className="block md:hidden space-y-4">
+                    {sortedReviews.length === 0 ? (
+                        <div className="text-center py-12">
+                            <div className="text-gray-500">
+                                <svg className="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                </svg>
+                                <p className="text-sm">No reviews found</p>
+                            </div>
+                        </div>
+                    ) : (
+                        sortedReviews.map((review) => (
+                            <div key={review.id || review.collectionRequestId} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                {/* Rating Section */}
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center space-x-2">
+                                        <div className="flex items-center space-x-1">
+                                            {renderStars(review.rating)}
+                                        </div>
+                                        <span className="text-sm font-medium">{review.rating}/5</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500">{formatDate(review.ratingDate)}</p>
+                                </div>
+
+                                {/* Collector & Customer Info */}
+                                <div className="grid grid-cols-1 gap-3 mb-3">
+                                    <div>
+                                        <p className="text-xs text-gray-600">Collector</p>
+                                        <p className="font-medium text-gray-900 text-sm truncate">{review.collectorName}</p>
+                                        <p className="text-xs text-gray-500 truncate">{review.collectorEmail}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-600">Customer</p>
+                                        <p className="font-medium text-gray-900 text-sm truncate">{review.userName}</p>
+                                        <p className="text-xs text-gray-500 truncate">{review.userEmail}</p>
+                                    </div>
+                                </div>
+
+                                {/* Feedback */}
+                                {review.feedback && (
+                                    <div className="mb-3">
+                                        <p className="text-xs text-gray-600 mb-1">Feedback</p>
+                                        <p className="text-sm text-gray-700 bg-white p-2 rounded border line-clamp-2">
+                                            "{review.feedback}"
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Actions */}
+                                <div className="flex space-x-2">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedReview(review);
+                                            setIsModalOpen(true);
+                                        }}
+                                        className="text-yellow-600 hover:text-yellow-800 text-sm font-medium px-3 py-1 bg-yellow-50 rounded-lg flex-1"
+                                    >
+                                        View Details
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteReview(review.id || review.collectionRequestId)}
+                                        className="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 bg-red-50 rounded-lg"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {/* Desktop Table View (md+) */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-gray-200">
-                                <th className="text-left py-3 px-4 font-medium text-gray-600">Rating</th>
-                                <th className="text-left py-3 px-4 font-medium text-gray-600">Collector</th>
-                                <th className="text-left py-3 px-4 font-medium text-gray-600">Customer</th>
-                                <th className="text-left py-3 px-4 font-medium text-gray-600">Feedback</th>
-                                <th className="text-left py-3 px-4 font-medium text-gray-600">Date</th>
-                                <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
+                                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Rating</th>
+                                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Collector</th>
+                                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Customer</th>
+                                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Feedback</th>
+                                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Date</th>
+                                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {sortedReviews.length === 0 ? (
                                 <tr>
-                                    <td colSpan="6" className="text-center py-8">
+                                    <td colSpan="6" className="text-center py-12">
                                         <div className="text-gray-500">
                                             <svg className="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
@@ -214,15 +289,15 @@ const ReviewManagement = () => {
                                             </div>
                                         </td>
                                         <td className="py-3 px-4">
-                                            <div>
-                                                <p className="font-medium text-gray-900">{review.collectorName}</p>
-                                                <p className="text-sm text-gray-500">{review.collectorEmail}</p>
+                                            <div className="min-w-0">
+                                                <p className="font-medium text-gray-900 text-sm truncate">{review.collectorName}</p>
+                                                <p className="text-sm text-gray-500 truncate">{review.collectorEmail}</p>
                                             </div>
                                         </td>
                                         <td className="py-3 px-4">
-                                            <div>
-                                                <p className="font-medium text-gray-900">{review.userName}</p>
-                                                <p className="text-sm text-gray-500">{review.userEmail}</p>
+                                            <div className="min-w-0">
+                                                <p className="font-medium text-gray-900 text-sm truncate">{review.userName}</p>
+                                                <p className="text-sm text-gray-500 truncate">{review.userEmail}</p>
                                             </div>
                                         </td>
                                         <td className="py-3 px-4 max-w-xs">
@@ -260,16 +335,16 @@ const ReviewManagement = () => {
                 </div>
             </div>
 
-            {/* Review Detail Modal */}
+            {/* Review Detail Modal - Enhanced Responsive */}
             {isModalOpen && selectedReview && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                        <div className="p-6 border-b border-gray-200">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <div className="p-4 sm:p-6 border-b border-gray-200">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-lg font-semibold text-gray-900">Review Details</h3>
                                 <button
                                     onClick={() => setIsModalOpen(false)}
-                                    className="text-gray-400 hover:text-gray-600"
+                                    className="text-gray-400 hover:text-gray-600 p-1"
                                 >
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -277,7 +352,7 @@ const ReviewManagement = () => {
                                 </button>
                             </div>
                         </div>
-                        <div className="p-6">
+                        <div className="p-4 sm:p-6">
                             <div className="space-y-6">
                                 {/* Rating */}
                                 <div className="text-center">
@@ -299,19 +374,19 @@ const ReviewManagement = () => {
                                 )}
 
                                 {/* Collection Details */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 gap-6">
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-3">Collector Information</h4>
                                         <div className="space-y-2 text-sm">
-                                            <p><span className="text-gray-600">Name:</span> {selectedReview.collectorName}</p>
-                                            <p><span className="text-gray-600">Email:</span> {selectedReview.collectorEmail}</p>
+                                            <p><span className="text-gray-600 font-medium">Name:</span> {selectedReview.collectorName}</p>
+                                            <p><span className="text-gray-600 font-medium">Email:</span> <span className="break-all">{selectedReview.collectorEmail}</span></p>
                                         </div>
                                     </div>
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-3">Customer Information</h4>
                                         <div className="space-y-2 text-sm">
-                                            <p><span className="text-gray-600">Name:</span> {selectedReview.userName}</p>
-                                            <p><span className="text-gray-600">Email:</span> {selectedReview.userEmail}</p>
+                                            <p><span className="text-gray-600 font-medium">Name:</span> {selectedReview.userName}</p>
+                                            <p><span className="text-gray-600 font-medium">Email:</span> <span className="break-all">{selectedReview.userEmail}</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -320,18 +395,18 @@ const ReviewManagement = () => {
                                 <div>
                                     <h4 className="font-medium text-gray-900 mb-3">Collection Details</h4>
                                     <div className="p-4 bg-gray-50 rounded-lg">
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-3">
                                             <div>
-                                                <span className="text-gray-600">Request ID:</span>
-                                                <span className="ml-2 font-medium">#{selectedReview.collectionRequestId}</span>
+                                                <span className="text-gray-600 font-medium">Request ID:</span>
+                                                <span className="ml-2 font-medium block sm:inline">#{selectedReview.collectionRequestId}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-600">Value:</span>
-                                                <span className="ml-2 font-medium text-green-600">Rs. {selectedReview.requestValue}</span>
+                                                <span className="text-gray-600 font-medium">Value:</span>
+                                                <span className="ml-2 font-medium text-green-600 block sm:inline">Rs. {selectedReview.requestValue}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-600">Date:</span>
-                                                <span className="ml-2 font-medium">{formatDate(selectedReview.requestDate)}</span>
+                                                <span className="text-gray-600 font-medium">Date:</span>
+                                                <span className="ml-2 font-medium block sm:inline">{formatDate(selectedReview.requestDate)}</span>
                                             </div>
                                         </div>
                                         {selectedReview.items && selectedReview.items.length > 0 && (
@@ -353,9 +428,9 @@ const ReviewManagement = () => {
                                 <div>
                                     <h4 className="font-medium text-gray-900 mb-3">Review Information</h4>
                                     <div className="text-sm space-y-1">
-                                        <p><span className="text-gray-600">Review Date:</span> {formatDate(selectedReview.ratingDate)}</p>
+                                        <p><span className="text-gray-600 font-medium">Review Date:</span> {formatDate(selectedReview.ratingDate)}</p>
                                         {selectedReview.editedDate && (
-                                            <p><span className="text-gray-600">Last Edited:</span> {formatDate(selectedReview.editedDate)}</p>
+                                            <p><span className="text-gray-600 font-medium">Last Edited:</span> {formatDate(selectedReview.editedDate)}</p>
                                         )}
                                     </div>
                                 </div>

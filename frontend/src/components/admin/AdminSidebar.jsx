@@ -144,7 +144,7 @@ const AdminSidebar = ({
       {/* Mobile overlay with blur effect */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+          className="fixed inset-0  bg-opacity-60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
